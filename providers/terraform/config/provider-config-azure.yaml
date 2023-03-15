@@ -1,0 +1,52 @@
+apiVersion: tf.upbound.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: default
+spec:
+  # Note that unlike most provider configs this one supports an array of
+  # credentials. This is because each Terraform workspace uses a single
+  # Crossplane provider config, but could use multiple Terraform providers each
+  # with their own credentials.
+  credentials:
+    - filename: gcp-credentials.json
+      source: Secret
+      secretRef:
+        namespace: crossplane-system
+        name: azure-tf-creds
+        key: clientId
+    - filename: gcp-credentials.json
+      source: Secret
+      secretRef:
+        namespace: crossplane-system
+        name: azure-tf-creds
+        key: clientSecret
+    - filename: gcp-credentials.json
+      source: Secret
+      secretRef:
+        namespace: crossplane-system
+        name: azure-tf-creds
+        key: tenantId
+    - filename: gcp-credentials.json
+      source: Secret
+      secretRef:
+        namespace: crossplane-system
+        name: azure-tf-creds
+        key: subscriptionId
+        
+  configuration: |
+    provider "azurerm" {
+      features {}
+      client_id       = "clientId"
+      client_secret   = "clientSecret"
+      tenant_id       = "tenantId"
+      subscription_id = "subscriptionId"
+    }
+
+    terraform {
+      backend "azurerm" {
+        resource_group_name  = "tfstate"
+        storage_account_name = "tfstate2356"
+        container_name       = "tfstate"
+        key                  = "terraform.tfstate"
+      }
+    }

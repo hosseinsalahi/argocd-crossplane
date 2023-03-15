@@ -1,0 +1,21 @@
+apiVersion: tf.upbound.io/v1beta1
+kind: Workspace
+metadata:
+  name: example-inline
+  annotations:
+    crossplane.io/external-name: demorg
+spec:
+  forProvider:
+    source: Inline
+    module: |
+      resource "azurerm_resource_group" "demo" {
+        name     = "example"
+        location = "West Europe"
+      }
+     
+      output "url" {
+        value = azurerm_resource_group.demo.id
+      }
+  writeConnectionSecretToRef:
+    namespace: default
+    name: terraform-workspace-example-inline
