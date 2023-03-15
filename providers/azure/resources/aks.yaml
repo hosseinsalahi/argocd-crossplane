@@ -4,6 +4,7 @@ metadata:
   labels:
     testing.upbound.io/example-name: demo
   name: demo
+  namespace: demo
 spec:
   forProvider:
     kubernetesClusterIdSelector:
@@ -22,11 +23,12 @@ metadata:
   labels:
     testing.upbound.io/example-name: demo
   name: demo
+  namespace: demo
 spec:
   forProvider:
     defaultNodePool:
     - name: default
-      nodeCount: 1
+      nodeCount: 2
       vmSize: Standard_D2_v2
     dnsPrefix: exampleaks1
     identity:
@@ -46,6 +48,7 @@ metadata:
   labels:
     testing.upbound.io/example-name: demo
   name: demo-rg
+  namespace: demo
 spec:
   forProvider:
     location: West Europe
