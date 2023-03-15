@@ -3,9 +3,7 @@ kind: Workspace
 metadata:
   name: example-inline
   annotations:
-    # The terraform workspace will be named 'coolbucket'. If you omit this
-    # annotation it would be derived from metadata.name - e.g. 'example-inline'.
-    crossplane.io/external-name: coolbucket
+    crossplane.io/external-name: demopsql
 spec:
   forProvider:
     # Workspaces default to using a remote source - like workspace-remote.yaml.
@@ -14,8 +12,8 @@ spec:
     source: Inline
     module: |
       // Outputs are written to the connection secret.
-      output "url" {
-        value       = google_storage_bucket.example.self_link
+      output "psql_name" {
+        value = google_sql_database_instance.main.name
       }
 
       resource "random_id" "example" {
@@ -24,13 +22,17 @@ spec:
 
       // The google provider and remote state are configured by the provider
       // config - see providerconfig.yaml.
-      resource "google_storage_bucket" "example" {
-        name = "crossplane-example-${terraform.workspace}-${random_id.example.hex}"
-        location      = "US"
-        force_destroy = true
+      resource "google_sql_database_instance" "main" {
+        name             = "main-instance-${random_id.example.hex}"
+        database_version = "POSTGRES_14"
+        region           = "europe-west3"
 
-        public_access_prevention = "enforced"
-      }
+        settings {
+          # Second-generation instance tiers are based on the machine
+          # type. See argument reference below.
+          tier = "db-f1-micro"
+        }  
+      }  
   writeConnectionSecretToRef:
-    namespace: default
+    namespace: demo
     name: terraform-workspace-example-inline
