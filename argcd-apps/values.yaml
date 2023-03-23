@@ -1,0 +1,37 @@
+applications: 
+ - name: argocd
+   namespace: argocd-system
+   additionalLabels: {}
+   additionalAnnotations: {}
+   finalizers:
+   - resources-finalizer.argocd.argoproj.io
+   project: default
+   sources:
+    - chart: argo-cd
+      repoURL: 	https://argoproj.github.io/argo-helm
+      targetRevision: 3.35.4
+   destination:
+     server: https://kubernetes.default.svc
+     namespace: argocd-system
+   syncPolicy:
+     automated:
+       prune: true
+       selfHeal: false
+ - name: crossplane
+   namespace: argocd-system
+   additionalLabels: {}
+   additionalAnnotations: {}
+   finalizers:
+   - resources-finalizer.argocd.argoproj.io
+   project: default
+   sources:
+    - chart: crossplane
+      repoURL: https://charts.crossplane.io/stable
+      targetRevision: 1.11.2
+   destination:
+     server: https://kubernetes.default.svc
+     namespace: crossplane-system
+   syncPolicy:
+     automated:
+       prune: true
+       selfHeal: false
