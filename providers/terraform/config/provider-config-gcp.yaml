@@ -8,7 +8,7 @@ spec:
   # Crossplane provider config, but could use multiple Terraform providers each
   # with their own credentials.
   credentials:
-    - filename: gcp-credes.json
+    - filename: gcp-credentials.json
       source: Secret
       secretRef:
         namespace: crossplane-system
@@ -19,7 +19,7 @@ spec:
   # providers.
   configuration: |
     provider "google" {
-      credentials = "gcp-credes.json"
+      credentials = "gcp-credentials.json"
       project     = "liquid-hossein-salahi-621"
     }
 
