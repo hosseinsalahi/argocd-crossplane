@@ -1,0 +1,56 @@
+apiVersion: containerservice.azure.upbound.io/v1beta1
+kind: KubernetesClusterNodePool
+metadata:
+  labels:
+    testing.upbound.io/example-name: demo
+  name: demo-node-pool
+  namespace: demo
+spec:
+  forProvider:
+    kubernetesClusterIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: demo
+    nodeCount: 1
+    tags:
+      Environment: demo
+    vmSize: Standard_DS2_v2
+  providerConfigRef:
+    name: default
+---
+apiVersion: containerservice.azure.upbound.io/v1beta1
+kind: KubernetesCluster
+metadata:
+  labels:
+    testing.upbound.io/example-name: demo
+  name: demo-cluster
+  namespace: demo
+spec:
+  forProvider:
+    defaultNodePool:
+    - name: default
+      nodeCount: 1
+      vmSize: Standard_D2_v2
+    dnsPrefix: exampleaks1
+    identity:
+    - type: SystemAssigned
+    location: "West Europe"
+    resourceGroupNameSelector:
+      matchLabels:
+        testing.upbound.io/example-name: demo
+    tags:
+      Environment: demo
+  providerConfigRef:
+    name: default
+---
+apiVersion: azure.upbound.io/v1beta1
+kind: ResourceGroup
+metadata:
+  labels:
+    testing.upbound.io/example-name: demo
+  name: demo-rg
+  namespace: demo
+spec:
+  forProvider:
+    location: West Europe
+  providerConfigRef:
+    name: default
